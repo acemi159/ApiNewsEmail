@@ -5,6 +5,7 @@ from send_email import send_email
 
 TOPIC = "Tesla"
 LANGUAGE = "en"
+
 # Get env variables needed for this email automation
 try:
     load_dotenv(override=True)
@@ -20,16 +21,16 @@ receiver = os.getenv("EMAIL")
 if not (news_api_key and email and password and receiver):
     raise KeyError("Missing Environment variables!")
 
-
 # Make the API call to get the news
 url = f"https://newsapi.org/v2/everything?q={TOPIC.lower()}&sortBy=publishedAt&apiKey={news_api_key}&language={LANGUAGE}"
-request = requests.get(url)
-content = request.json()
+response = requests.get(url)
+content = response.json()
 email_body = ""
 
 # Prepare the email message and send it 
 for article in content["articles"][:20]:
     if article["title"] and article["url"] and article["description"]:
+        
         email_body += article["title"] + "\n"
         email_body += article["url"] + "\n"
         email_body += (
